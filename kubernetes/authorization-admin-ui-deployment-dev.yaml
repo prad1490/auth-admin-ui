@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-admin-ui
+  namespace: authz
+  labels:
+    app: authorization-admin-ui
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: authorization-admin-ui-pod
+      environment: DEV
+      tier: ui
+  template:
+    metadata:
+      labels:
+        app: authorization-admin-ui-pod
+        environment: DEV
+        tier: ui
+    spec:
+      containers:
+        - name: authorization-admin-ui
+          image: xaxiseng/authorization-admin-ui:1.0-SNAPSHOT
+          imagePullPolicy: Always
+          env:
+            - name: LOG_FILENAME_SUFFIX
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: NODE_ENV
+              value: production
+            - name: OKTA_DEFAULT_URL
+              value: https://dev-256811.oktapreview.com/oauth2/default
+            - name: CLIENT_ID
+              value: 0oahg6xpttbPUJEJI0h7
+            - name: API_HOST
+              value: docker-wkr-1-na-dev.use1.mplatform.net
+            - name: USER_SERVICE_PORT
+              value: "80"
+            - name: AUTHENTICATION_SERVICE_PORT
+              value: "80"
+            - name: AUTHENTICATION_SERVICE_PATH
+              value: /authentication-service/v1
+            - name: USER_SERVICE_PATH
+              value: /user-service/v1
+            - name: API_TOKEN
+              value: mbfhy7WeDu6Neeywm8MvuTUp
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1024M
+          ports:
+            - containerPort: 5000
+              name: server-port
+          volumeMounts:
+            - name: logs
+              mountPath: /app/logs
+      volumes:
+        - name: logs
+          nfs:
+            path: /export/dev/authorization-admin-ui
+            server: 10.82.26.250
+      imagePullSecrets:
+        - name: k8smpf-docker

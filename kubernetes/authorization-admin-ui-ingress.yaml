@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: authorization-admin-ui-ingress
+  namespace: authz
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+#    nginx.ingress.kubernetes.io/rewrite-target: "/authorization-admin/$1"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: "/authorization-admin"
+            backend:
+              serviceName: authorization-admin-ui-service
+              servicePort: 5000

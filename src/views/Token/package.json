@@ -1,0 +1,6 @@
+{
+  "name": "TokenVerification",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./TokenVerification.js"
+}

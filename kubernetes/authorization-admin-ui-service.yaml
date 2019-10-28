@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-admin-ui-service
+  namespace: authz
+spec:
+  selector:
+    app: authorization-admin-ui-pod
+  ports:
+    - name: server-port
+      port: 5000
+      targetPort: 5000
